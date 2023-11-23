@@ -1,2 +1,2 @@
 # PaciakRacer
-My own game! dada
+My own game!
