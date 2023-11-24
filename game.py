@@ -1,5 +1,28 @@
 import pygame
+import sys
 
 
 class Game:
-    pygame.init()
+    def __init__(self):
+        pygame.init()
+        pygame.display.set_caption("Paciak Racer")
+        self.screen = pygame.display.set_mode((1920, 1080))
+        self.display = pygame.Surface((960, 540), pygame.SRCALPHA)
+
+        self.clock = pygame.time.Clock()
+
+    def run(self):
+        while True:
+            self.display.fill((0, 0, 0, 0))
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+            pygame.display.update()
+            self.clock.tick(60)
+
+
+if __name__ == "__main__":
+    Game().run()
