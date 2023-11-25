@@ -4,9 +4,10 @@ import os
 BASE_IMG_PATH = "data/img/"
 
 
-def load_image(path):
+def load_image(path, color_key = None):
     img = pygame.image.load(BASE_IMG_PATH + path).convert()
-    img.set_colorkey((0, 0, 0))
+    if color_key:
+        img.set_colorkey(color_key)
     return img
 
 
@@ -15,6 +16,10 @@ def load_images(path):
     for img_name in sorted(os.listdir(BASE_IMG_PATH + path)):
         images.append(load_image(path + '/' + img_name))
     return images
+
+
+def round_up(first_number: int, second_number: int):
+    return (first_number // second_number) + 1
 
 
 class Animation:
