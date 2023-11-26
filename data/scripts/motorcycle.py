@@ -10,6 +10,10 @@ class Motorcycle:
         self.wheel_axle_position = wheel_axle_position
         self.motorcycle_rect = position
         self.angle = 0
+        self.speed = 0
+        self.top_speed = 257
+
+        self.font = pygame.font.SysFont(None, 24)
 
     def wheelie(self):
         self.motorcycle_rect = self.motorcycle_image.get_rect(topleft=(self.position[0] - self.wheel_axle_position[0],
@@ -33,7 +37,24 @@ class Motorcycle:
                 if self.angle <= 0:
                     self.angle = 0
 
+    def acceleration(self):
+        if self.game.throttle_open and self.speed < self.top_speed:
+            self.speed += self.top_speed // 20
+        else:
+            if self.speed >= 0:
+                self.speed -= self.top_speed // 15
+            if self.speed <= 0:
+                self.speed = 0
+
+    def speedometer(self, surface):
+        pygame.draw.rect(surface=surface, color=(0, 0, 0), rect=(50, 100, self.top_speed+20, 50))
+        pygame.draw.rect(surface=surface, color=(139, 0, 0), rect=(50, 100, self.speed, 50))
+
     def render(self, surface):
         rotated_image, rotated_image_rect = self.wheelie()
         self.wheelie_state()
+        self.acceleration()
+        self.speedometer(surface)
+        counter = self.font.render(str(self.speed), True, (255, 255, 255))
+        surface.blit(counter, (50, 150))
         return surface.blit(rotated_image, rotated_image_rect)

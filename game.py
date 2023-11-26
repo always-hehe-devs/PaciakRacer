@@ -26,8 +26,9 @@ class Game:
 
         self.collision = False
         self.wheelie = False
+        self.throttle_open = False
 
-        self.motorcycle_position = [100, 938]
+        self.motorcycle_position = [200, 938]
         self.motorcycle = Motorcycle(self, self.assets['yamaha_r6'], self.motorcycle_position, (32, 78))
 
     def run(self):
@@ -40,11 +41,11 @@ class Game:
                 self.screen.blit(self.assets['ground'], tile_position)
                 img_width = img_width + self.assets["ground"].get_width()
 
-            if not self.collision:
-                self.car_rect.x -= 10
-                if self.car_rect.x < -(self.assets['car'].get_width()):
-                    self.car_rect.x = RESOLUTION[0]
-            self.screen.blit(self.assets['car'], self.car_rect)
+            # if not self.collision:
+            #     self.car_rect.x -= 10
+            #     if self.car_rect.x < -(self.assets['car'].get_width()):
+            #         self.car_rect.x = RESOLUTION[0]
+            # self.screen.blit(self.assets['car'], self.car_rect)
 
             self.motorcycle.render(self.screen)
 
@@ -60,11 +61,15 @@ class Game:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_UP:
                         self.wheelie = True
+                    if event.key == pygame.K_a:
+                        self.throttle_open = True
                     if event.key == pygame.K_SPACE:
                         self.motorcycle_position[1] -= 150
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_UP:
                         self.wheelie = False
+                    if event.key == pygame.K_a:
+                        self.throttle_open = False
                     if event.key == pygame.K_SPACE:
                         self.motorcycle_position[1] += 150
 
