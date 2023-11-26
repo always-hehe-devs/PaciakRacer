@@ -1,6 +1,7 @@
 import pygame
 import sys
 from data.scripts.util import load_image, round_up
+from data.scripts.motorcycle import Motorcycle
 
 RESOLUTION = (1920, 1080)
 
@@ -17,25 +18,17 @@ class Game:
             "background": load_image("background/background_0.png"),
             "ground": load_image("tiles/ground/0.png"),
             "car": load_image("cars/car.png", color_key=(0, 0, 0)),
-            "player": load_image("player/player.png", color_key=(235, 235, 235))
+            "yamaha_r6": load_image("motorcycles/yamaha_r6.png", color_key=(235, 235, 235))
         }
 
         self.car_x_pos = 1000
         self.car_rect = self.assets['car'].get_rect(bottomleft=(self.car_x_pos, 960))
 
         self.collision = False
-        self.angle = 0
+        self.wheelie = False
 
-        self.player_x_pos = 100
-        self.player_y_pos = 960
-        self.player_rect = self.assets['player'].get_rect(bottomleft=(self.player_x_pos, self.player_y_pos))
-
-    def wheelie(self):
-        player = self.assets["player"]
-        rotated_image = pygame.transform.rotate(player, self.angle)
-        new_rect = rotated_image.get_rect(center=player.get_rect(bottomleft=(self.player_x_pos, self.player_y_pos)).bottomleft)
-
-        return self.screen.blit(rotated_image, new_rect.center)
+        self.motorcycle_position = [100, 938]
+        self.motorcycle = Motorcycle(self, self.assets['yamaha_r6'], self.motorcycle_position, (32, 78))
 
     def run(self):
         while True:
@@ -53,9 +46,9 @@ class Game:
                     self.car_rect.x = RESOLUTION[0]
             self.screen.blit(self.assets['car'], self.car_rect)
 
-            self.wheelie()
+            self.motorcycle.render(self.screen)
 
-            if self.player_rect.colliderect(self.car_rect):
+            if self.motorcycle.motorcycle_rect.colliderect(self.car_rect):
                 self.collision = True
             else:
                 self.collision = False
@@ -66,12 +59,14 @@ class Game:
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_UP:
-                        self.angle += 10
+                        self.wheelie = True
                     if event.key == pygame.K_SPACE:
-                        self.player_rect.y -= 150
+                        self.motorcycle_position[1] -= 150
                 if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_UP:
+                        self.wheelie = False
                     if event.key == pygame.K_SPACE:
-                        self.player_rect.y += 150
+                        self.motorcycle_position[1] += 150
 
             pygame.display.update()
             self.clock.tick(60)
