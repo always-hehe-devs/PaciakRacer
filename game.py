@@ -59,6 +59,10 @@ class Game:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_w:
+                        self.motorcycle.change_gear("up")
+                    if event.key == pygame.K_s:
+                        self.motorcycle.change_gear("down")
                     if event.key == pygame.K_UP:
                         self.wheelie = True
                     if event.key == pygame.K_a:

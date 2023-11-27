@@ -1,4 +1,5 @@
 import pygame
+import math
 
 
 class Motorcycle:
@@ -11,9 +12,15 @@ class Motorcycle:
         self.motorcycle_rect = position
         self.angle = 0
         self.speed = 0
-        self.top_speed = 257
+        self.gear_box = 6
+        self.current_gear = 0
+        self.low_rpm = 1200
+        self.max_rpm = 12000
+        self.current_rpm = self.low_rpm
+        self.top_speed = 290
+        self.gear_ratios = {0: 0, 1: 0.55172413793103456, 2: 0.62068965517241386, 3: 0.75862068965517246, 4: 0.86206896551724136, 5: 0.8965517241379316, 6: 1.0}
 
-        self.font = pygame.font.SysFont(None, 24)
+        self.font = pygame.font.SysFont(None, 50)
 
     def wheelie(self):
         self.motorcycle_rect = self.motorcycle_image.get_rect(topleft=(self.position[0] - self.wheel_axle_position[0],
@@ -37,24 +44,52 @@ class Motorcycle:
                 if self.angle <= 0:
                     self.angle = 0
 
-    def acceleration(self):
-        if self.game.throttle_open and self.speed < self.top_speed:
-            self.speed += self.top_speed // 20
-        else:
-            if self.speed >= 0:
-                self.speed -= self.top_speed // 15
-            if self.speed <= 0:
-                self.speed = 0
+    def calculate_speed(self, engine_rpm):
+        gear_ratio = self.gear_ratios[self.current_gear]
+        scaled_rpm = engine_rpm * gear_ratio
+        self.speed = math.floor(min(scaled_rpm / self.max_rpm * self.top_speed, self.top_speed))
 
-    def speedometer(self, surface):
-        pygame.draw.rect(surface=surface, color=(0, 0, 0), rect=(50, 100, self.top_speed+20, 50))
-        pygame.draw.rect(surface=surface, color=(139, 0, 0), rect=(50, 100, self.speed, 50))
+    def set_rpm(self):
+        if self.game.throttle_open and self.current_rpm < self.max_rpm:
+            self.current_rpm += 500
+        elif not self.game.throttle_open:
+            self.current_rpm -= 100
+            if self.current_rpm <= self.low_rpm:
+                self.current_rpm = self.low_rpm
+        return self.current_rpm
+
+    def change_gear(self, direction: str):
+        if direction == "up":
+            if self.current_gear >= self.gear_box:
+                self.current_gear = self.gear_box
+            else:
+                self.current_gear += 1
+                self.current_rpm -= 4000
+        elif direction == "down":
+            if self.current_gear <= 0:
+                self.current_gear = 0
+            else:
+                self.current_gear -= 1
+                self.current_rpm += 3000
+
+    def draw_speedometer(self, surface):
+        pygame.draw.rect(surface=surface, color=(0, 0, 0), rect=(50, 100, self.max_rpm//30, 50))
+        pygame.draw.rect(surface=surface, color=(139, 0, 0), rect=(50, 100, self.current_rpm//32, 50))
+
+        # counter_shadow = self.font.render(f"{self.current_rpm} RPM", True, (0, 0, 0))
+        counter_main = self.font.render(f"{self.current_rpm} RPM", True, (255, 255, 255))
+        # counter_shadow_rotated = pygame.transform.rotate(counter_shadow, -30)
+        # counter_main_rotated = pygame.transform.rotate(counter_main, -30)
+
+        speed = self.font.render(f"{self.speed} km/h", True, (0, 0, 0))
+        gear = self.font.render(str("N" if self.current_gear == 0 else self.current_gear), True, (245, 155, 0))
+        surface.blit(gear, (100, 150))
+        surface.blit(speed, (310, 150))
+        surface.blit(counter_main, (50, 70))
 
     def render(self, surface):
         rotated_image, rotated_image_rect = self.wheelie()
         self.wheelie_state()
-        self.acceleration()
-        self.speedometer(surface)
-        counter = self.font.render(str(self.speed), True, (255, 255, 255))
-        surface.blit(counter, (50, 150))
-        return surface.blit(rotated_image, rotated_image_rect)
+        self.calculate_speed(self.set_rpm())
+        self.draw_speedometer(surface)
+        surface.blit(rotated_image, rotated_image_rect)
