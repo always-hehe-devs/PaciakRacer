@@ -1,5 +1,6 @@
 import pygame
 import math
+import random
 
 
 class Motorcycle:
@@ -18,7 +19,7 @@ class Motorcycle:
         self.max_rpm = 12000
         self.current_rpm = self.low_rpm
         self.top_speed = 290
-        self.gear_ratios = {0: 0, 1: 0.55172413793103456, 2: 0.62068965517241386, 3: 0.75862068965517246, 4: 0.86206896551724136, 5: 0.8965517241379316, 6: 1.0}
+        self.gear_ratios = {0: 0, 1: 0.6, 2: 0.7, 3: 0.80, 4: 0.90, 5: 0.95, 6: 1.0}
 
         self.font = pygame.font.SysFont(None, 50)
 
@@ -46,8 +47,16 @@ class Motorcycle:
 
     def calculate_speed(self, engine_rpm):
         gear_ratio = self.gear_ratios[self.current_gear]
-        scaled_rpm = engine_rpm * gear_ratio
-        self.speed = math.floor(min(scaled_rpm / self.max_rpm * self.top_speed, self.top_speed))
+        if gear_ratio != 0:
+            scaled_rpm = engine_rpm * gear_ratio
+            updated_speed = math.floor(min(scaled_rpm / self.max_rpm * self.top_speed, self.top_speed))
+            if updated_speed < self.speed:
+                self.speed -= 2
+            else:
+                self.speed = updated_speed
+        else:
+            if self.speed >= 2:
+                self.speed -= 2
 
     def set_rpm(self):
         if self.game.throttle_open and self.current_rpm < self.max_rpm:
@@ -55,7 +64,7 @@ class Motorcycle:
         elif not self.game.throttle_open:
             self.current_rpm -= 100
             if self.current_rpm <= self.low_rpm:
-                self.current_rpm = self.low_rpm
+                self.current_rpm = random.randint(self.low_rpm - 300, self.low_rpm + 300)
         return self.current_rpm
 
     def change_gear(self, direction: str):
@@ -70,7 +79,10 @@ class Motorcycle:
                 self.current_gear = 0
             else:
                 self.current_gear -= 1
-                self.current_rpm += 3000
+                after_drop_gear_rpm = self.current_rpm + 3000
+                if after_drop_gear_rpm <= self.max_rpm:
+                    self.current_rpm += 3000
+                self.current_rpm = self.max_rpm
 
     def draw_speedometer(self, surface):
         pygame.draw.rect(surface=surface, color=(0, 0, 0), rect=(50, 100, self.max_rpm//30, 50))
