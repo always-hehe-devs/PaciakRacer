@@ -47,6 +47,7 @@ class Game:
             #         self.car_rect.x = RESOLUTION[0]
             # self.screen.blit(self.assets['car'], self.car_rect)
 
+            self.motorcycle.update()
             self.motorcycle.render(self.screen)
 
             if self.motorcycle.motorcycle_rect.colliderect(self.car_rect):

@@ -13,13 +13,15 @@ class Motorcycle:
         self.motorcycle_rect = position
         self.angle = 0
         self.speed = 0
-        self.gear_box = 6
-        self.current_gear = 0
+        self.current_gear = "N"
         self.low_rpm = 1200
         self.max_rpm = 12000
         self.current_rpm = self.low_rpm
+        self.rev_limiter_on = False
         self.top_speed = 290
-        self.gear_ratios = {0: 0, 1: 0.6, 2: 0.7, 3: 0.80, 4: 0.90, 5: 0.95, 6: 1.0}
+        self.gear_ratios = {"N": 0, 1: 0.5, 2: 0.7, 3: 0.80, 4: 0.90, 5: 0.95, 6: 0.98}
+        self.gear_box = len(self.gear_ratios) - 1
+        self.is_neutral = True
 
         self.font = pygame.font.SysFont(None, 50)
 
@@ -47,16 +49,24 @@ class Motorcycle:
 
     def calculate_speed(self, engine_rpm):
         gear_ratio = self.gear_ratios[self.current_gear]
-        if gear_ratio != 0:
-            scaled_rpm = engine_rpm * gear_ratio
-            updated_speed = math.floor(min(scaled_rpm / self.max_rpm * self.top_speed, self.top_speed))
-            if updated_speed < self.speed:
-                self.speed -= 2
+        if not self.rev_limiter_on or gear_ratio == 0:
+            if gear_ratio != 0:
+                scaled_rpm = engine_rpm * gear_ratio
+                updated_speed = math.floor(min(scaled_rpm / self.max_rpm * self.top_speed, self.top_speed))
+                if updated_speed < self.speed:
+                    self.speed -= 2
+                else:
+                    self.speed = updated_speed
             else:
-                self.speed = updated_speed
+                if self.speed >= 2:
+                    self.speed -= 2
+
+    def rev_limiter(self):
+        if self.current_rpm >= self.max_rpm:
+            self.current_rpm = self.max_rpm - random.randint(500, 1000)
+            self.rev_limiter_on = True
         else:
-            if self.speed >= 2:
-                self.speed -= 2
+            self.rev_limiter_on = False
 
     def set_rpm(self):
         if self.game.throttle_open and self.current_rpm < self.max_rpm:
@@ -69,14 +79,18 @@ class Motorcycle:
 
     def change_gear(self, direction: str):
         if direction == "up":
-            if self.current_gear >= self.gear_box:
-                self.current_gear = self.gear_box
-            else:
+            self.current_rpm -= 4000
+            if self.current_gear != "N" and self.current_gear != self.gear_box and self.current_gear != 1:
                 self.current_gear += 1
-                self.current_rpm -= 4000
+            elif self.current_gear == 1:
+                self.current_gear = "N"
+            elif self.current_gear == "N":
+                self.current_gear = 2
         elif direction == "down":
-            if self.current_gear <= 0:
-                self.current_gear = 0
+            if self.current_gear == 2:
+                self.current_gear = "N"
+            elif self.current_gear == "N" or self.current_gear == 1:
+                self.current_gear = 1
             else:
                 self.current_gear -= 1
                 after_drop_gear_rpm = self.current_rpm + 3000
@@ -99,9 +113,12 @@ class Motorcycle:
         surface.blit(speed, (310, 150))
         surface.blit(counter_main, (50, 70))
 
+    def update(self):
+        self.wheelie_state()
+        self.rev_limiter()
+        self.calculate_speed(self.set_rpm())
+
     def render(self, surface):
         rotated_image, rotated_image_rect = self.wheelie()
-        self.wheelie_state()
-        self.calculate_speed(self.set_rpm())
         self.draw_speedometer(surface)
         surface.blit(rotated_image, rotated_image_rect)
