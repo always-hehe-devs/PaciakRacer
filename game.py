@@ -3,14 +3,13 @@ import sys
 from data.scripts.util import load_image, round_up
 from data.scripts.motorcycle import Motorcycle
 
-RESOLUTION = (1920, 1080)
-
 
 class Game:
+    RESOLUTION = (1920, 1080)
     def __init__(self):
         pygame.init()
         pygame.display.set_caption("Paciak Racer")
-        self.screen = pygame.display.set_mode(RESOLUTION)
+        self.screen = pygame.display.set_mode(self.RESOLUTION)
 
         self.clock = pygame.time.Clock()
 
@@ -18,7 +17,9 @@ class Game:
             "background": load_image("background/background_0.png"),
             "ground": load_image("tiles/ground/0.png"),
             "car": load_image("cars/car.png", color_key=(0, 0, 0)),
-            "yamaha_r6": load_image("motorcycles/yamaha_r6.png", color_key=(235, 235, 235))
+            "yamaha_r6": load_image("motorcycles/yamaha_r6.png", color_key=(235, 235, 235)),
+            "speedometer": load_image("speedometer/speedometer.png", alpha_convert=True),
+            "needle": load_image("speedometer/needle.png", alpha_convert=True),
         }
 
         self.car_x_pos = 1000
@@ -36,7 +37,7 @@ class Game:
             self.screen.blit(self.assets['background'], (0, 0))
 
             img_width = 0
-            for _ in range(round_up(RESOLUTION[0], self.assets["ground"].get_width())):
+            for _ in range(round_up(self.RESOLUTION[0], self.assets["ground"].get_width())):
                 tile_position = (img_width, 960)
                 self.screen.blit(self.assets['ground'], tile_position)
                 img_width = img_width + self.assets["ground"].get_width()
