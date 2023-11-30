@@ -4,7 +4,7 @@ import os
 BASE_IMG_PATH = "data/img/"
 
 
-def load_image(path, color_key = None):
+def load_image(path, color_key=None):
     img = pygame.image.load(BASE_IMG_PATH + path).convert()
     if color_key:
         img.set_colorkey(color_key)
