@@ -19,9 +19,8 @@ class Motorcycle:
         self.current_rpm = self.low_rpm
         self.rev_limiter_on = False
         self.top_speed = 290
-        self.gear_ratios = {"N": 0, 1: 0.5, 2: 0.7, 3: 0.80, 4: 0.90, 5: 0.95, 6: 0.98}
+        self.gear_ratios = {"N": 0, 1: 0.5, 2: 0.6, 3: 0.7, 4: 0.85, 5: 0.94, 6: 0.98}
         self.gear_box = len(self.gear_ratios) - 1
-        self.is_neutral = True
         self.idling = True
 
         self.speedometer_pos = (self.game.RESOLUTION[0] - 550, 20)
@@ -32,11 +31,12 @@ class Motorcycle:
         self.needle_rect = self.needle.get_rect()
         self.needle_angle = 0
 
-        self.font = pygame.font.SysFont(None, 50)
+        self.font = pygame.font.SysFont(None, 28)
+        self.gear_font = pygame.font.Font("data/fonts/digital-7.ttf", 30)
         self.speedo_font = pygame.font.Font("data/fonts/digital-7.ttf", 78)
         self.speedo_unit = pygame.font.Font("data/fonts/digital-7.ttf", 20)
 
-    def wheelie(self):
+    def wheelie(self, surface):
         self.motorcycle_rect = self.motorcycle_image.get_rect(topleft=(self.position[0] - self.wheel_axle_position[0],
                                                                        self.position[1] - self.wheel_axle_position[1]))
         offset_center_to_pivot = pygame.math.Vector2(self.position) - self.motorcycle_rect.center
@@ -47,7 +47,7 @@ class Motorcycle:
         rotated_image = pygame.transform.rotate(self.motorcycle_image, self.angle)
         rotated_image_rect = rotated_image.get_rect(center=rotated_image_center)
 
-        return rotated_image, rotated_image_rect
+        return surface.blit(rotated_image, rotated_image_rect)
 
     def wheelie_state(self):
         if self.game.wheelie:
@@ -65,26 +65,26 @@ class Motorcycle:
             scaled_rpm = engine_rpm * gear_ratio
             updated_speed = math.floor(min(scaled_rpm / self.max_rpm * self.top_speed, self.top_speed))
             if updated_speed < self.speed:
-                self.speed -= 2
+                self.speed -= 1
             else:
                 self.speed = updated_speed
         else:
-            if self.speed >= 2:
-                self.speed -= 2
+            if self.speed >= 1:
+                self.speed -= 1
 
     def rev_limiter(self):
         if self.current_rpm >= self.max_rpm:
-            self.current_rpm = self.max_rpm - random.randint(300, 500)
+            self.current_rpm = self.max_rpm - random.randint(100, 200)
             self.rev_limiter_on = True
         else:
             self.rev_limiter_on = False
 
     def set_rpm(self):
-        if self.game.throttle_open and self.current_rpm < self.max_rpm:
+        if self.game.throttle_open and not self.rev_limiter_on:
             self.idling = False
-            self.current_rpm += 500
+            self.current_rpm += 200
         elif not self.game.throttle_open:
-            self.current_rpm -= 200
+            self.current_rpm -= 100
             if self.current_rpm <= self.low_rpm:
                 self.idling = True
                 self.current_rpm = random.randint(self.low_rpm - 100, self.low_rpm + 100)
@@ -98,12 +98,14 @@ class Motorcycle:
             elif self.current_gear == 1:
                 self.current_gear = "N"
             elif self.current_gear == "N":
+                self.current_rpm -= 2000
                 self.current_gear = 2
         elif direction == "down":
             if self.current_gear == 2:
                 self.current_gear = "N"
             elif self.current_gear == "N" or self.current_gear == 1:
                 self.current_gear = 1
+                self.current_rpm += 2000
             else:
                 self.current_gear -= 1
                 after_drop_gear_rpm = self.current_rpm + 2000
@@ -128,8 +130,17 @@ class Motorcycle:
         self.draw_needle(surface)
         speed = self.speedo_font.render(str(self.speed), True, (0, 0, 0))
         unit = self.speedo_unit.render("km/h", True, (0, 0, 0))
-        gear = self.font.render(str("N" if self.current_gear == 0 else self.current_gear), True, (245, 155, 0))
-        surface.blit(gear, (100, 150))
+
+        str_gear = "N" if self.current_gear == 0 else self.current_gear
+        gear = self.gear_font.render(f"GEAR {str_gear}", True, (0, 0, 0))
+        surface.blit(gear, (self.speedometer_pos[0] + 338, self.speedometer_pos[1] + 228))
+
+        if self.rev_limiter_on:
+            pygame.draw.circle(surface, "red", (self.speedometer_pos[0] + 467, self.speedometer_pos[1] + 235), 10)
+        if self.current_gear == "N":
+            pygame.draw.circle(surface, "green", (self.speedometer_pos[0] + 141, self.speedometer_pos[1] + 288), 13)
+            neutral = self.font.render("N", True, (255, 255, 255))
+            surface.blit(neutral, (self.speedometer_pos[0] + 134, self.speedometer_pos[1] + 279))
 
         # bad init?
         counter_offset = 0
@@ -141,6 +152,7 @@ class Motorcycle:
             counter_offset = 50
         if self.speed >= 200:
             counter_offset = 72
+
         surface.blit(unit, (self.speedometer_pos[0] + 150, self.speedometer_pos[1] + 110))
         surface.blit(speed, (self.speedometer_pos[0] + 113 - counter_offset, self.speedometer_pos[1] + 100))
 
@@ -150,6 +162,6 @@ class Motorcycle:
         self.calculate_speed(self.set_rpm())
 
     def render(self, surface):
-        rotated_image, rotated_image_rect = self.wheelie()
+        self.wheelie(surface)
         self.draw_speedometer(surface)
-        surface.blit(rotated_image, rotated_image_rect)
+
