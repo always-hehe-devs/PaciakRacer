@@ -1,7 +1,8 @@
 import pygame
 import sys
-from data.scripts.util import load_image, round_up
+from data.scripts.util import load_image, load_images, round_up
 from data.scripts.motorcycle import Motorcycle
+from data.scripts.background import Background
 
 
 class Game:
@@ -20,6 +21,7 @@ class Game:
             "yamaha_r6": load_image("motorcycles/yamaha_r6.png", color_key=(235, 235, 235)),
             "speedometer": load_image("speedometer/speedometer.png", alpha_convert=True),
             "needle": load_image("speedometer/needle.png", alpha_convert=True),
+            "trees": load_images("background/trees", color_key=(0, 0, 0))
         }
 
         self.car_x_pos = 1000
@@ -32,7 +34,11 @@ class Game:
         self.motorcycle_position = [200, 938]
         self.motorcycle = Motorcycle(self, self.assets['yamaha_r6'], self.motorcycle_position, (32, 78))
 
+        self.background = Background(self)
+
     def run(self):
+
+
         while True:
             self.screen.blit(self.assets['background'], (0, 0))
 
@@ -42,14 +48,13 @@ class Game:
                 self.screen.blit(self.assets['ground'], tile_position)
                 img_width = img_width + self.assets["ground"].get_width()
 
-            # if not self.collision:
-            #     self.car_rect.x -= 10
-            #     if self.car_rect.x < -(self.assets['car'].get_width()):
-            #         self.car_rect.x = RESOLUTION[0]
-            # self.screen.blit(self.assets['car'], self.car_rect)
+            move_x = self.motorcycle.speed * 0.05
+
+            self.background.render(self.screen)
 
             self.motorcycle.update()
             self.motorcycle.render(self.screen)
+
 
             if self.motorcycle.motorcycle_rect.colliderect(self.car_rect):
                 self.collision = True
