@@ -19,22 +19,27 @@ class Background:
         surf.blit(obj_img, (bg_x, bg_y))
 
     def create_trees_layers(self):
-        # TODO calculate number of trees in surface
-        self.scale_offset = 50
+        # TODO make it reusable
+        self.scale_offset = 48 * 2
         layers = []
         for index, tree in enumerate(self.trees):
-            tree = pygame.transform.smoothscale(tree, (self.scale_offset + 75, self.scale_offset + 75))
+            tree = pygame.transform.smoothscale(tree, (self.scale_offset + 96, self.scale_offset + 96))
             layer = pygame.Surface((self.game.RESOLUTION[0], tree.get_height()), pygame.SRCALPHA)
-            for i in range(12):
-                layer.blit(tree, (i * tree.get_width(), 0))
+            iteration_num = (self.game.RESOLUTION[0] // (tree.get_width()))
+            if iteration_num <= 0:
+                iteration_num = 1
+            separator = (self.game.RESOLUTION[0] / iteration_num) - tree.get_width()
+            for i in range(iteration_num):
+                layer.blit(tree, (i * (separator + tree.get_width()), 0))
             layers.append(layer)
-            self.scale_offset += 100
+            self.scale_offset += 48 * 6
         return layers
 
     def render_trees(self, surface, speed):
         time_offset = 0.25
+        speed = speed / 50
         for layer in self.create_trees_layers():
-            self.move_x = self.move_x - self.move_tree_x -speed
+            self.move_x = self.move_x - speed
             Background.draw_layers(self, surface, layer, self.move_x * time_offset, 960-layer.get_height())
             time_offset += 0.25
 
@@ -43,5 +48,3 @@ class Background:
 
     def render(self, surface, speed):
         self.render_trees(surface, speed)
-
-# https://stackoverflow.com/questions/63712333/how-to-make-parallax-scrolling-work-properly-with-a-camera-that-stops-at-edges-p/74002486#74002486

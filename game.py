@@ -7,6 +7,7 @@ from data.scripts.background import Background
 
 class Game:
     RESOLUTION = (1920, 1080)
+
     def __init__(self):
         pygame.init()
         pygame.display.set_caption("Paciak Racer")
