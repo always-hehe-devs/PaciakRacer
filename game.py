@@ -50,7 +50,7 @@ class Game:
 
             move_x = self.motorcycle.speed * 0.05
 
-            self.background.render(self.screen)
+            self.background.render(self.screen, self.motorcycle.speed)
 
             self.motorcycle.update()
             self.motorcycle.render(self.screen)
