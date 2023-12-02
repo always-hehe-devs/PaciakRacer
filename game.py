@@ -41,16 +41,8 @@ class Game:
 
 
         while True:
-            self.screen.blit(self.assets['background'], (0, 0))
-
-            img_width = 0
-            for _ in range(round_up(self.RESOLUTION[0], self.assets["ground"].get_width())):
-                tile_position = (img_width, 960)
-                self.screen.blit(self.assets['ground'], tile_position)
-                img_width = img_width + self.assets["ground"].get_width()
-
-            move_x = self.motorcycle.speed * 0.05
-
+            self.background.render_static_background(self.screen)
+            self.background.render_road(self.screen)
             self.background.render(self.screen, self.motorcycle.speed)
 
             self.motorcycle.update()

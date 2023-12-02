@@ -1,7 +1,5 @@
-import random
-
 import pygame
-from data.scripts.util import scale_images
+from data.scripts.util import round_up
 
 
 class Background:
@@ -13,10 +11,20 @@ class Background:
         self.move_x = 0
         self.scale_offset = 0
 
-    def draw_layers(self, surf, obj_img, bg_x, bg_y):
+    def render_static_background(self, surface):
+        surface.blit(self.game.assets['background'], (0, 0))
+
+    def render_road(self, surface):
+        img_width = 0
+        for _ in range(round_up(self.game.RESOLUTION[0], self.game.assets["ground"].get_width())):
+            tile_position = (img_width, 960)
+            surface.blit(self.game.assets['ground'], tile_position)
+            img_width = img_width + self.game.assets["ground"].get_width()
+
+    def draw_layers(self, surface, obj_img, bg_x, bg_y):
         bg_x = bg_x % self.game.RESOLUTION[0]
-        surf.blit(obj_img, (bg_x - surf.get_width(), bg_y))
-        surf.blit(obj_img, (bg_x, bg_y))
+        surface.blit(obj_img, (bg_x - surface.get_width(), bg_y))
+        surface.blit(obj_img, (bg_x, bg_y))
 
     def create_trees_layers(self):
         # TODO make it reusable
