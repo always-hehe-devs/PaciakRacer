@@ -3,6 +3,7 @@ import sys
 from data.scripts.util import load_image, load_images, round_up
 from data.scripts.motorcycle import Motorcycle
 from data.scripts.background import Background
+from data.scripts.obstacles import Obstacles
 
 
 class Game:
@@ -22,7 +23,8 @@ class Game:
             "yamaha_r6": load_image("motorcycles/yamaha_r6.png", color_key=(235, 235, 235)),
             "speedometer": load_image("speedometer/speedometer.png", alpha_convert=True),
             "needle": load_image("speedometer/needle.png", alpha_convert=True),
-            "trees": load_images("background/trees", color_key=(0, 0, 0))
+            "trees": load_images("background/trees", alpha_convert=True),
+            "skip": load_image("background/obstacles/skip.png", alpha_convert=True)
         }
 
         self.car_x_pos = 1000
@@ -35,20 +37,23 @@ class Game:
 
         self.motorcycle = Motorcycle(self, self.assets['yamaha_r6'],(32, 78))
         self.background = Background(self)
+        self.obstacles = Obstacles(self, self.background.road_y)
 
     def run(self):
-
-
         while True:
             self.background.render_static_background(self.screen)
             self.background.render_road(self.screen)
             self.background.render(self.screen, self.motorcycle.speed)
 
+            self.obstacles.render(self.screen, self.motorcycle.speed)
+            skip_rect = self.obstacles.render_skip(self.screen, self.motorcycle.speed)
+
             self.motorcycle.update()
             self.motorcycle.render(self.screen)
 
 
-            if self.motorcycle.motorcycle_rect.colliderect(self.car_rect):
+            if self.motorcycle.motorcycle_rect.colliderect(skip_rect):
+                print("collided")
                 self.collision = True
             else:
                 self.collision = False

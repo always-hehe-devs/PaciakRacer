@@ -178,4 +178,3 @@ class Motorcycle:
     def render(self, surface):
         self.wheelie(surface)
         self.draw_speedometer(surface)
-

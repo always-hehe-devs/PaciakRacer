@@ -10,6 +10,7 @@ class Background:
         self.trees = self.game.assets['trees']
         self.move_x = 0
         self.scale_offset = 0
+        self.road_y = 960
 
     def render_static_background(self, surface):
         surface.blit(self.game.assets['background'], (0, 0))
@@ -17,7 +18,7 @@ class Background:
     def render_road(self, surface):
         img_width = 0
         for _ in range(round_up(self.game.RESOLUTION[0], self.game.assets["ground"].get_width())):
-            tile_position = (img_width, 960)
+            tile_position = (img_width, self.road_y)
             surface.blit(self.game.assets['ground'], tile_position)
             img_width = img_width + self.game.assets["ground"].get_width()
 
@@ -44,7 +45,7 @@ class Background:
 
     def render_trees(self, surface, speed):
         time_offset = 0.25
-        speed = speed / 50
+        speed = speed / 30
         for layer in self.create_trees_layers():
             self.move_x = self.move_x - speed
             Background.draw_layers(self, surface, layer, self.move_x * time_offset, 960-layer.get_height())
