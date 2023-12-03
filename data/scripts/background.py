@@ -27,7 +27,6 @@ class Background:
         surface.blit(obj_img, (bg_x, bg_y))
 
     def create_trees_layers(self):
-        # TODO make it reusable
         self.scale_offset = 48 * 2
         layers = []
         for index, tree in enumerate(self.trees):
@@ -40,7 +39,7 @@ class Background:
             for i in range(iteration_num):
                 layer.blit(tree, (i * (separator + tree.get_width()), 0))
             layers.append(layer)
-            self.scale_offset += 48 * 6
+            self.scale_offset += 48 * 4
         return layers
 
     def render_trees(self, surface, speed):
@@ -50,9 +49,6 @@ class Background:
             self.move_x = self.move_x - speed
             Background.draw_layers(self, surface, layer, self.move_x * time_offset, 960-layer.get_height())
             time_offset += 0.25
-
-    def update(self, speed):
-        pass
 
     def render(self, surface, speed):
         self.render_trees(surface, speed)

@@ -31,10 +31,9 @@ class Game:
         self.collision = False
         self.wheelie = False
         self.throttle_open = False
+        self.jumping = False
 
-        self.motorcycle_position = [200, 938]
-        self.motorcycle = Motorcycle(self, self.assets['yamaha_r6'], self.motorcycle_position, (32, 78))
-
+        self.motorcycle = Motorcycle(self, self.assets['yamaha_r6'],(32, 78))
         self.background = Background(self)
 
     def run(self):
@@ -68,14 +67,12 @@ class Game:
                     if event.key == pygame.K_a:
                         self.throttle_open = True
                     if event.key == pygame.K_SPACE:
-                        self.motorcycle_position[1] -= 150
+                        self.jumping = True
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_UP:
                         self.wheelie = False
                     if event.key == pygame.K_a:
                         self.throttle_open = False
-                    if event.key == pygame.K_SPACE:
-                        self.motorcycle_position[1] += 150
 
             pygame.display.update()
             self.clock.tick(60)

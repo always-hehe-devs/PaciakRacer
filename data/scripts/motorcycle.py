@@ -5,12 +5,12 @@ import random
 
 class Motorcycle:
 
-    def __init__(self, game, motorcycle_image, position, wheel_axle_position):
+    def __init__(self, game, motorcycle_image, wheel_axle_position):
         self.game = game
         self.motorcycle_image = motorcycle_image
-        self.position = position
+        self.position = [200, 938]
         self.wheel_axle_position = wheel_axle_position
-        self.motorcycle_rect = position
+        self.motorcycle_rect = self.position
         self.angle = 0
         self.speed = 0
         self.current_gear = "N"
@@ -36,6 +36,10 @@ class Motorcycle:
         self.speedo_font = pygame.font.Font("data/fonts/digital-7.ttf", 78)
         self.speedo_unit = pygame.font.Font("data/fonts/digital-7.ttf", 20)
 
+        self.gravity = 1
+        self.jump_height = 20
+        self.velocity = self.jump_height
+
     def wheelie(self, surface):
         self.motorcycle_rect = self.motorcycle_image.get_rect(topleft=(self.position[0] - self.wheel_axle_position[0],
                                                                        self.position[1] - self.wheel_axle_position[1]))
@@ -58,9 +62,18 @@ class Motorcycle:
                 if self.angle <= 0:
                     self.angle = 0
 
+    def jump(self):
+        if self.game.jumping:
+            self.position[1] -= self.velocity
+            self.velocity -= self.gravity
+            if self.velocity <= -self.jump_height:
+                self.game.jumping = False
+                self.velocity = self.jump_height
+        else:
+            self.position[1] = 938
+
     def calculate_speed(self, engine_rpm):
         gear_ratio = self.gear_ratios[self.current_gear]
-        # if not self.rev_limiter_on or gear_ratio == 0 or self.idling:
         if gear_ratio != 0:
             scaled_rpm = engine_rpm * gear_ratio
             updated_speed = math.floor(min(scaled_rpm / self.max_rpm * self.top_speed, self.top_speed))
@@ -157,6 +170,7 @@ class Motorcycle:
         surface.blit(speed, (self.speedometer_pos[0] + 113 - counter_offset, self.speedometer_pos[1] + 100))
 
     def update(self):
+        self.jump()
         self.wheelie_state()
         self.rev_limiter()
         self.calculate_speed(self.set_rpm())
