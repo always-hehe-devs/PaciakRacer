@@ -37,7 +37,7 @@ class Motorcycle:
         self.speedo_unit = pygame.font.Font("data/fonts/digital-7.ttf", 20)
 
         self.gravity = 1
-        self.jump_height = 20
+        self.jump_height = 22
         self.velocity = self.jump_height
 
     def wheelie(self, surface):

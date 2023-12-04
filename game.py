@@ -24,7 +24,7 @@ class Game:
             "speedometer": load_image("speedometer/speedometer.png", alpha_convert=True),
             "needle": load_image("speedometer/needle.png", alpha_convert=True),
             "trees": load_images("background/trees", alpha_convert=True),
-            "skip": load_image("background/obstacles/skip.png", alpha_convert=True)
+            "obstacles": load_images("background/obstacles", alpha_convert=True)
         }
 
         self.car_x_pos = 1000
@@ -45,16 +45,15 @@ class Game:
             self.background.render_road(self.screen)
             self.background.render(self.screen, self.motorcycle.speed)
 
-            self.obstacles.render(self.screen, self.motorcycle.speed)
-            skip_rect = self.obstacles.render_skip(self.screen, self.motorcycle.speed)
+            obstacle_rect = self.obstacles.render_obstacles(self.screen, self.motorcycle.speed)
 
             self.motorcycle.update()
             self.motorcycle.render(self.screen)
 
 
-            if self.motorcycle.motorcycle_rect.colliderect(skip_rect):
-                print("collided")
+            if self.motorcycle.motorcycle_rect.colliderect(obstacle_rect):
                 self.collision = True
+                self.motorcycle.speed = 0
             else:
                 self.collision = False
 
