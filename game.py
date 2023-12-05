@@ -20,11 +20,12 @@ class Game:
             "background": load_image("background/background_0.png"),
             "ground": load_image("tiles/ground/0.png"),
             "car": load_image("cars/car.png", color_key=(0, 0, 0)),
-            "yamaha_r6": load_image("motorcycles/yamaha_r6.png", color_key=(235, 235, 235)),
+            "biker": load_image("motorcycles/biker.png", alpha_convert=True),
             "speedometer": load_image("speedometer/speedometer.png", alpha_convert=True),
             "needle": load_image("speedometer/needle.png", alpha_convert=True),
             "trees": load_images("background/trees", alpha_convert=True),
-            "obstacles": load_images("background/obstacles", alpha_convert=True)
+            "obstacles": load_images("background/obstacles", alpha_convert=True),
+            "lantern": load_image("background/lantern.png", alpha_convert=True)
         }
 
         self.car_x_pos = 1000
@@ -35,7 +36,7 @@ class Game:
         self.throttle_open = False
         self.jumping = False
 
-        self.motorcycle = Motorcycle(self, self.assets['yamaha_r6'],(32, 78))
+        self.motorcycle = Motorcycle(self, self.assets['biker'],(22, 77))
         self.background = Background(self)
         self.obstacles = Obstacles(self, self.background.road_y)
 
@@ -50,10 +51,14 @@ class Game:
             self.motorcycle.update()
             self.motorcycle.render(self.screen)
 
+            self.background.render_lanterns(self.screen, self.motorcycle.speed)
 
-            if self.motorcycle.motorcycle_rect.colliderect(obstacle_rect):
-                self.collision = True
+            if self.motorcycle.motorcycle_mask.overlap(self.obstacles.obstacle_mask,
+                                                       (obstacle_rect.x - self.motorcycle.motorcycle_pos[0],
+                                                        obstacle_rect.y- self.motorcycle.motorcycle_pos[1])):
+                print("collision")
                 self.motorcycle.speed = 0
+                self.collision = True
             else:
                 self.collision = False
 

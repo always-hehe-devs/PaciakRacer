@@ -8,6 +8,8 @@ class Motorcycle:
     def __init__(self, game, motorcycle_image, wheel_axle_position):
         self.game = game
         self.motorcycle_image = motorcycle_image
+        self.motorcycle_mask = pygame.mask.from_surface(self.motorcycle_image)
+        self.motorcycle_pos = (0, 0)
         self.position = [200, 938]
         self.wheel_axle_position = wheel_axle_position
         self.motorcycle_rect = self.position
@@ -40,7 +42,7 @@ class Motorcycle:
         self.jump_height = 22
         self.velocity = self.jump_height
 
-    def wheelie(self, surface):
+    def player(self):
         self.motorcycle_rect = self.motorcycle_image.get_rect(topleft=(self.position[0] - self.wheel_axle_position[0],
                                                                        self.position[1] - self.wheel_axle_position[1]))
         offset_center_to_pivot = pygame.math.Vector2(self.position) - self.motorcycle_rect.center
@@ -50,8 +52,9 @@ class Motorcycle:
         rotated_image_center = (self.position[0] - rotated_offset.x, self.position[1] - rotated_offset.y)
         rotated_image = pygame.transform.rotate(self.motorcycle_image, self.angle)
         rotated_image_rect = rotated_image.get_rect(center=rotated_image_center)
-
-        return surface.blit(rotated_image, rotated_image_rect)
+        self.motorcycle_pos = rotated_image_rect
+        self.motorcycle_mask = pygame.mask.from_surface(rotated_image)
+        return rotated_image, rotated_image_rect
 
     def wheelie_state(self):
         if self.game.wheelie:
@@ -176,5 +179,6 @@ class Motorcycle:
         self.calculate_speed(self.set_rpm())
 
     def render(self, surface):
-        self.wheelie(surface)
+        image, rect = self.player()
+        surface.blit(image, rect)
         self.draw_speedometer(surface)

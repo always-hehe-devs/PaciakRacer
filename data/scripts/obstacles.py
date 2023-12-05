@@ -9,6 +9,7 @@ class Obstacles:
         self.skip_x = 0
         self.obstacle_images = self.game.assets['obstacles']
         self.obstacle_image = self.game.assets['obstacles'][1]
+        self.obstacle_mask = pygame.mask.from_surface(self.obstacle_image)
 
         self.prev = self.game.assets['obstacles'][0]
 
@@ -26,5 +27,5 @@ class Obstacles:
             self.skip_x -= self.game.RESOLUTION[0] + skip.get_width()
             self.prev = self.obstacle_image
             skip = self.get_random_obstacle()
+            self.obstacle_mask = pygame.mask.from_surface(self.obstacle_image)
         return surface.blit(skip, (self.game.RESOLUTION[0] - self.skip_x, (self.road_pos - skip.get_height())))
-
