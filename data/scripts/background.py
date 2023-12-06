@@ -29,12 +29,25 @@ class Background:
             layer.blit(lantern, dest=(i * ((self.game.RESOLUTION[0] // 4) + lantern.get_width()), 0))
         return layer
 
+    def create_road_layer(self):
+        road = self.game.assets['road']
+        road = pygame.transform.smoothscale(road, (road.get_width(), road.get_height()))
+        layer = pygame.Surface((self.game.RESOLUTION[0], road.get_height()), pygame.SRCALPHA)
+        for i in range(round_up(self.game.RESOLUTION[0], self.game.assets["road"].get_width())):
+            layer.blit(road, dest=(i * road.get_width(), 0))
+        return layer
+
     def render_road(self, surface):
-        img_width = 0
-        for _ in range(round_up(self.game.RESOLUTION[0], self.game.assets["road"].get_width())):
-            tile_position = (img_width, self.road_y)
-            surface.blit(self.game.assets['road'], tile_position)
-            img_width = img_width + self.game.assets["road"].get_width()
+        layer = self.create_road_layer()
+        move_x_road = self.move_x // 2
+        return Background.draw_layers(self, surface, layer, move_x_road, 1070 - layer.get_height())
+
+    # def render_road(self, surface):
+    #     img_width = 0 + self.move_x
+    #     for _ in range(round_up(self.game.RESOLUTION[0], self.game.assets["road"].get_width())):
+    #         tile_position = (img_width, self.road_y)
+    #         surface.blit(self.game.assets['road'], tile_position)
+    #         img_width = img_width + self.game.assets["road"].get_width()
 
     def create_trees_layers(self):
         self.scale_offset = 48 * 2
@@ -62,7 +75,7 @@ class Background:
 
     def render_lanterns(self, surface, speed):
         layer = self.create_lanterns_layers()
-        speed = speed / 100
+        speed = speed / 50
         move_x_lantern = self.move_x - speed
         return Background.draw_layers(self, surface, layer, move_x_lantern, 1070 - layer.get_height())
 
