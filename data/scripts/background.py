@@ -11,7 +11,7 @@ class Background:
         self.trees = self.game.assets['trees']
         self.move_x = 0
         self.scale_offset = 0
-        self.road_y = 960
+        self.road_y = self.game.RESOLUTION[1] - self.game.assets["road"].get_height()
 
     def draw_layers(self, surface, obj_img, bg_x, bg_y):
         bg_x = bg_x % self.game.RESOLUTION[0]
@@ -31,10 +31,10 @@ class Background:
 
     def render_road(self, surface):
         img_width = 0
-        for _ in range(round_up(self.game.RESOLUTION[0], self.game.assets["ground"].get_width())):
+        for _ in range(round_up(self.game.RESOLUTION[0], self.game.assets["road"].get_width())):
             tile_position = (img_width, self.road_y)
-            surface.blit(self.game.assets['ground'], tile_position)
-            img_width = img_width + self.game.assets["ground"].get_width()
+            surface.blit(self.game.assets['road'], tile_position)
+            img_width = img_width + self.game.assets["road"].get_width()
 
     def create_trees_layers(self):
         self.scale_offset = 48 * 2
@@ -64,7 +64,7 @@ class Background:
         layer = self.create_lanterns_layers()
         speed = speed / 100
         move_x_lantern = self.move_x - speed
-        return Background.draw_layers(self, surface, layer, move_x_lantern, 960 - layer.get_height())
+        return Background.draw_layers(self, surface, layer, move_x_lantern, 1070 - layer.get_height())
 
     def render(self, surface, speed):
         self.render_trees(surface, speed)
