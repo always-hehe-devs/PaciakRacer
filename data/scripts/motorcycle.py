@@ -25,18 +25,18 @@ class Motorcycle:
         self.gear_box = len(self.gear_ratios) - 1
         self.idling = True
 
-        self.speedometer_pos = (self.game.RESOLUTION[0] - 550, 20)
-        self.speedometer = pygame.transform.smoothscale(self.game.assets['speedometer'], (530, 319))
+        self.speedometer_pos = (self.game.SCALE[0] - self.game.SCALE[0] // 2.8, 20)
+        self.speedometer = pygame.transform.smoothscale(self.game.assets['speedometer'], (self.game.SCALE[0] // 3, self.game.SCALE[1] // 3))
 
-        self.needle_axle = (31, 9)
-        self.needle = pygame.transform.smoothscale(self.game.assets['needle'], (160, 22))
+        self.needle_axle = (17, 5)
+        self.needle = pygame.transform.smoothscale(self.game.assets['needle'], (90, 12))
         self.needle_rect = self.needle.get_rect()
         self.needle_angle = 0
 
-        self.font = pygame.font.SysFont(None, 28)
-        self.gear_font = pygame.font.Font("data/fonts/digital-7.ttf", 30)
-        self.speedo_font = pygame.font.Font("data/fonts/digital-7.ttf", 78)
-        self.speedo_unit = pygame.font.Font("data/fonts/digital-7.ttf", 20)
+        self.font = pygame.font.SysFont(None, 15)
+        self.gear_font = pygame.font.Font("data/fonts/digital-7.ttf", 15)
+        self.speedo_font = pygame.font.Font("data/fonts/digital-7.ttf", 38)
+        self.speedo_unit = pygame.font.Font("data/fonts/digital-7.ttf", 10)
 
         self.gravity = 1
         self.jump_height = 22
@@ -73,11 +73,13 @@ class Motorcycle:
                 self.game.jumping = False
                 self.velocity = self.jump_height
         else:
-            self.position[1] = 938
+            self.position[1] = 300
 
     def calculate_speed(self, engine_rpm):
+        if self.game.collision:
+            self.speed = 0
         gear_ratio = self.gear_ratios[self.current_gear]
-        if gear_ratio != 0:
+        if gear_ratio != 0 and not self.game.collision:
             scaled_rpm = engine_rpm * gear_ratio
             updated_speed = math.floor(min(scaled_rpm / self.max_rpm * self.top_speed, self.top_speed))
             if updated_speed < self.speed:
@@ -121,7 +123,8 @@ class Motorcycle:
                 self.current_gear = "N"
             elif self.current_gear == "N" or self.current_gear == 1:
                 self.current_gear = 1
-                self.current_rpm += 2000
+                if self.current_gear != 1:
+                    self.current_rpm += 2000
             else:
                 self.current_gear -= 1
                 after_drop_gear_rpm = self.current_rpm + 2000
@@ -129,8 +132,8 @@ class Motorcycle:
                     self.current_rpm += 2000
 
     def draw_needle(self, surface):
-        self.needle_angle = 225 - (self.current_rpm // 58)
-        needle_pos = (self.speedometer_pos[0] + 372, 174)
+        self.needle_angle = 223 - (self.current_rpm // 58)
+        needle_pos = (self.speedometer_pos[0] + 225, 110)
         self.needle_rect = self.needle.get_rect(topleft=(needle_pos[0] - self.needle_axle[0],
                                                          needle_pos[1] - self.needle_axle[1]))
         offset_center_to_pivot = pygame.math.Vector2(needle_pos) - self.needle_rect.center
@@ -149,28 +152,30 @@ class Motorcycle:
 
         str_gear = "N" if self.current_gear == 0 else self.current_gear
         gear = self.gear_font.render(f"GEAR {str_gear}", True, (0, 0, 0))
-        surface.blit(gear, (self.speedometer_pos[0] + 338, self.speedometer_pos[1] + 228))
+        surface.blit(gear, (self.speedometer_pos[0] + 205, self.speedometer_pos[1] + 129))
 
         if self.rev_limiter_on:
-            pygame.draw.circle(surface, "red", (self.speedometer_pos[0] + 467, self.speedometer_pos[1] + 235), 10)
+            pygame.draw.circle(surface, "red", (self.speedometer_pos[0] + 280, self.speedometer_pos[1] + 132), 5)
         if self.current_gear == "N":
-            pygame.draw.circle(surface, "green", (self.speedometer_pos[0] + 141, self.speedometer_pos[1] + 288), 13)
+            pygame.draw.circle(surface, "green", (self.speedometer_pos[0] + 85, self.speedometer_pos[1] + 163), 7)
             neutral = self.font.render("N", True, (255, 255, 255))
-            surface.blit(neutral, (self.speedometer_pos[0] + 134, self.speedometer_pos[1] + 279))
+            surface.blit(neutral, (self.speedometer_pos[0] + 81, self.speedometer_pos[1] + 158))
 
-        # bad init?
+        # TODO bad init? refactor this
         counter_offset = 0
         if self.speed in range(10, 19):
+            counter_offset = 6
+        if self.speed in range(100, 115):
             counter_offset = 12
         if self.speed in range(20, 111):
-            counter_offset = 35
+            counter_offset = 18
         if self.speed in range(112, 199):
-            counter_offset = 50
+            counter_offset = 24
         if self.speed >= 200:
-            counter_offset = 72
+            counter_offset = 36
 
-        surface.blit(unit, (self.speedometer_pos[0] + 150, self.speedometer_pos[1] + 110))
-        surface.blit(speed, (self.speedometer_pos[0] + 113 - counter_offset, self.speedometer_pos[1] + 100))
+        surface.blit(unit, (self.speedometer_pos[0] + 90, self.speedometer_pos[1] + 60))
+        surface.blit(speed, (self.speedometer_pos[0] + 70 - counter_offset, self.speedometer_pos[1] + 58))
 
     def update(self):
         self.jump()

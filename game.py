@@ -7,12 +7,14 @@ from data.scripts.obstacles import Obstacles
 
 
 class Game:
-    RESOLUTION = (1920, 1080)
+    RESOLUTION = (1024, 768)
+    SCALE = (RESOLUTION[0] // 2, RESOLUTION[1] // 2)
 
     def __init__(self):
         pygame.init()
         pygame.display.set_caption("Paciak Racer")
         self.screen = pygame.display.set_mode(self.RESOLUTION)
+        self.display = pygame.Surface(self.SCALE, pygame.SRCALPHA)
 
         self.clock = pygame.time.Clock()
 
@@ -43,16 +45,16 @@ class Game:
 
     def run(self):
         while True:
-            self.background.render_static_background(self.screen)
-            self.background.render_road(self.screen)
-            self.background.render(self.screen, self.motorcycle.speed)
+            self.background.render_static_background(self.display)
+            self.background.render_road(self.display)
+            self.background.render(self.display, self.motorcycle.speed)
 
-            obstacle_rect = self.obstacles.render_obstacles(self.screen, self.motorcycle.speed)
+            obstacle_rect = self.obstacles.render_obstacles(self.display, self.motorcycle.speed)
 
             self.motorcycle.update()
-            self.motorcycle.render(self.screen)
+            self.motorcycle.render(self.display)
 
-            self.background.render_lanterns(self.screen, self.motorcycle.speed)
+            self.background.render_lanterns(self.display, self.motorcycle.speed)
 
             if self.motorcycle.motorcycle_mask.overlap(self.obstacles.obstacle_mask,
                                                        (obstacle_rect.x - self.motorcycle.motorcycle_pos[0],
@@ -84,6 +86,7 @@ class Game:
                     if event.key == pygame.K_a:
                         self.throttle_open = False
 
+            self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
             pygame.display.update()
             self.clock.tick(60)
 
