@@ -7,7 +7,7 @@ from data.scripts.obstacles import Obstacles
 
 
 class Game:
-    RESOLUTION = (1024, 768)
+    RESOLUTION = (1920, 1080)
     SCALE = (RESOLUTION[0] // 2, RESOLUTION[1] // 2)
 
     def __init__(self):
@@ -66,7 +66,7 @@ class Game:
                 self.collision = False
 
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+                if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
