@@ -39,8 +39,8 @@ class Game:
         self.throttle_open = False
         self.jumping = False
 
-        self.motorcycle = Motorcycle(self, self.assets['biker'],(22, 77))
         self.background = Background(self)
+        self.motorcycle = Motorcycle(self, self.assets['biker'], (22, 77))
         self.obstacles = Obstacles(self, self.background.road_y)
 
     def run(self):

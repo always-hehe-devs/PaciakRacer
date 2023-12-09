@@ -10,7 +10,7 @@ class Motorcycle:
         self.motorcycle_image = motorcycle_image
         self.motorcycle_mask = pygame.mask.from_surface(self.motorcycle_image)
         self.motorcycle_pos = (0, 0)
-        self.position = [200, 938]
+        self.position = [150, self.game.background.road_y + self.motorcycle_image.get_height()]
         self.wheel_axle_position = wheel_axle_position
         self.motorcycle_rect = self.position
         self.angle = 0
@@ -73,7 +73,7 @@ class Motorcycle:
                 self.game.jumping = False
                 self.velocity = self.jump_height
         else:
-            self.position[1] = 300
+            self.position[1] = self.game.background.road_y + self.motorcycle_image.get_height()
 
     def calculate_speed(self, engine_rpm):
         if self.game.collision:

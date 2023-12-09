@@ -24,8 +24,7 @@ class Background:
         lantern = self.game.assets['lantern']
         lantern = pygame.transform.smoothscale(lantern, (lantern.get_width() * 2, lantern.get_height() * 2))
         layer = pygame.Surface((self.game.SCALE[0], lantern.get_height()), pygame.SRCALPHA)
-        for i in range(1):
-            layer.blit(lantern, dest=(i * ((self.game.SCALE[0] // 4) + lantern.get_width()), 0))
+        layer.blit(lantern, dest=(self.game.SCALE[0] - (self.game.SCALE[0] // 2), 0))
         return layer
 
     def create_road_layer(self):
@@ -37,8 +36,8 @@ class Background:
 
     def render_road(self, surface):
         layer = self.create_road_layer()
-        move_x_road = self.move_x // 2
-        return Background.draw_layers(self, surface, layer, move_x_road, self.game.SCALE[1] - layer.get_height())
+        move_x_road = self.move_x // 3
+        return Background.draw_layers(self, surface, layer, move_x_road, self.road_y)
 
     def create_trees_layers(self):
         self.scale_offset = 0
@@ -67,7 +66,7 @@ class Background:
         layer = self.create_lanterns_layers()
         speed = speed / 50
         move_x_lantern = self.move_x - speed
-        return Background.draw_layers(self, surface, layer, move_x_lantern, self.game.SCALE[1] - layer.get_height())
+        return Background.draw_layers(self, surface, layer, move_x_lantern, (self.game.SCALE[1] - layer.get_height()) - 3)
 
     def render(self, surface, speed):
         self.render_trees(surface, speed)

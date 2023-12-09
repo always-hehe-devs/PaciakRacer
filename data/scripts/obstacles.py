@@ -6,10 +6,11 @@ class Obstacles:
     def __init__(self, game, road_pos):
         self.game = game
         self.road_pos = road_pos
-        self.skip_x = 0
+        self.obstacle_x = 0
         self.obstacle_images = self.game.assets['obstacles']
         self.obstacle_image = self.game.assets['obstacles'][1]
         self.obstacle_mask = pygame.mask.from_surface(self.obstacle_image)
+        self.obstacle_y = 70
 
         self.prev = self.game.assets['obstacles'][0]
 
@@ -20,12 +21,12 @@ class Obstacles:
         return self.obstacle_image
 
     def render_obstacles(self, surface, speed):
-        self.skip_x += speed / 30
-        skip = self.obstacle_image
-        skip = pygame.transform.smoothscale(skip, size=(skip.get_width() * 2, skip.get_height() * 2))
-        if self.skip_x >= self.game.SCALE[0] + skip.get_width():
-            self.skip_x -= self.game.SCALE[0] + skip.get_width()
+        self.obstacle_x += speed / 30
+        obstacle = self.obstacle_image
+        obstacle = pygame.transform.smoothscale(obstacle, size=(obstacle.get_width() * 1.5, obstacle.get_height() * 1.5))
+        if self.obstacle_x >= self.game.SCALE[0] + obstacle.get_width():
+            self.obstacle_x -= self.game.SCALE[0] + obstacle.get_width()
             self.prev = self.obstacle_image
-            skip = self.get_random_obstacle()
+            obstacle = self.get_random_obstacle()
             self.obstacle_mask = pygame.mask.from_surface(self.obstacle_image)
-        return surface.blit(skip, (self.game.SCALE[0] - self.skip_x, (self.road_pos - skip.get_height())))
+        return surface.blit(obstacle, (self.game.SCALE[0] - self.obstacle_x, self.road_pos + self.obstacle_y))
