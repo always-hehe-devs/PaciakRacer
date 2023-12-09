@@ -1,5 +1,4 @@
 import pygame
-from data.scripts.util import round_up
 import random
 
 
@@ -32,7 +31,7 @@ class Background:
     def create_road_layer(self):
         road = self.game.assets['road']
         layer = pygame.Surface((self.game.SCALE[0], road.get_height()), pygame.SRCALPHA)
-        for i in range(round_up(self.game.SCALE[0], self.game.assets["road"].get_width())):
+        for i in range((self.game.SCALE[0] // road.get_width()) + 1):
             layer.blit(road, dest=(i * road.get_width(), 0))
         return layer
 
@@ -45,7 +44,6 @@ class Background:
         self.scale_offset = 0
         layers = []
         for index, tree in enumerate(self.trees):
-            # tree = pygame.transform.smoothscale(tree, (self.scale_offset + 96, self.scale_offset + 96))
             layer = pygame.Surface((self.game.SCALE[0], tree.get_height()), pygame.SRCALPHA)
             iteration_num = (self.game.SCALE[0] // (tree.get_width()))
             if iteration_num <= 0:

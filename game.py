@@ -1,6 +1,6 @@
 import pygame
 import sys
-from data.scripts.util import load_image, load_images, round_up
+from data.scripts.util import load_image, load_images
 from data.scripts.motorcycle import Motorcycle
 from data.scripts.background import Background
 from data.scripts.obstacles import Obstacles
@@ -59,7 +59,6 @@ class Game:
             if self.motorcycle.motorcycle_mask.overlap(self.obstacles.obstacle_mask,
                                                        (obstacle_rect.x - self.motorcycle.motorcycle_pos[0],
                                                         obstacle_rect.y- self.motorcycle.motorcycle_pos[1])):
-                print("collision")
                 self.motorcycle.speed = 0
                 self.collision = True
             else:
