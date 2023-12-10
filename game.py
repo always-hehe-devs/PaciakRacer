@@ -69,18 +69,22 @@ class Game:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        self.motorcycle.move("up")
+                    if event.key == pygame.K_DOWN:
+                        self.motorcycle.move("down")
                     if event.key == pygame.K_w:
                         self.motorcycle.change_gear("up")
                     if event.key == pygame.K_s:
                         self.motorcycle.change_gear("down")
-                    if event.key == pygame.K_UP:
+                    if event.key == pygame.K_f:
                         self.wheelie = True
                     if event.key == pygame.K_a:
                         self.throttle_open = True
                     if event.key == pygame.K_SPACE:
                         self.jumping = True
                 if event.type == pygame.KEYUP:
-                    if event.key == pygame.K_UP:
+                    if event.key == pygame.K_f:
                         self.wheelie = False
                     if event.key == pygame.K_a:
                         self.throttle_open = False
