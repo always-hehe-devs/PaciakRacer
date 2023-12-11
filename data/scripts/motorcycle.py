@@ -175,13 +175,14 @@ class Motorcycle:
         surface.blit(unit, (self.speedometer_pos[0] + 90, self.speedometer_pos[1] + 60))
         surface.blit(speed, (self.speedometer_pos[0] + 70 - counter_offset, self.speedometer_pos[1] + 58))
 
-    def move(self, direction):
-        if direction == "up":
-            self.position[1] -= 1
-        elif direction == "down":
-            self.position[1] += 1
+    def move(self):
+        if pygame.key.get_pressed()[pygame.K_UP] and self.position[1] >= self.game.background.road_y + 52:
+            self.position[1] -= 10
+        elif pygame.key.get_pressed()[pygame.K_DOWN] and self.position[1] <= self.game.SCALE[1] - 35:
+            self.position[1] += 10
 
     def update(self):
+        self.move()
         self.jump()
         self.wheelie_state()
         self.rev_limiter()

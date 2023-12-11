@@ -56,6 +56,7 @@ class Game:
 
             self.background.render_lanterns(self.display, self.motorcycle.speed)
 
+            # TODO updated collision area to height from ground to bike axle
             if self.motorcycle.motorcycle_mask.overlap(self.obstacles.obstacle_mask,
                                                        (obstacle_rect.x - self.motorcycle.motorcycle_pos[0],
                                                         obstacle_rect.y- self.motorcycle.motorcycle_pos[1])):
@@ -69,10 +70,6 @@ class Game:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_UP:
-                        self.motorcycle.move("up")
-                    if event.key == pygame.K_DOWN:
-                        self.motorcycle.move("down")
                     if event.key == pygame.K_w:
                         self.motorcycle.change_gear("up")
                     if event.key == pygame.K_s:
@@ -88,6 +85,7 @@ class Game:
                         self.wheelie = False
                     if event.key == pygame.K_a:
                         self.throttle_open = False
+
 
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
             pygame.display.update()
