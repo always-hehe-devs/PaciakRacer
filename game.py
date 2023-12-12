@@ -43,6 +43,9 @@ class Game:
         self.motorcycle = Motorcycle(self, self.assets['biker'], (22, 77))
         self.obstacles = Obstacles(self, self.background.road_y)
 
+        self.last_key = None
+        self.last_key_v = {"up": False, "down": False}
+
     def run(self):
         while True:
             self.background.render_static_background(self.display)
@@ -80,7 +83,17 @@ class Game:
                         self.throttle_open = True
                     if event.key == pygame.K_SPACE:
                         self.jumping = True
+                    if event.key == pygame.K_UP:
+                        self.last_key = "up"
+                        self.last_key_v["up"] = True
+                    if event.key == pygame.K_DOWN:
+                        self.last_key = "down"
+                        self.last_key_v["down"] = True
                 if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_UP:
+                        self.last_key_v["up"] = False
+                    if event.key == pygame.K_DOWN:
+                        self.last_key_v["down"] = False
                     if event.key == pygame.K_f:
                         self.wheelie = False
                     if event.key == pygame.K_a:
