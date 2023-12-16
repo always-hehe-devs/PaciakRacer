@@ -59,9 +59,17 @@ class Game:
 
             self.background.render_lanterns(self.display, self.motorcycle.speed)
 
+            motorcycle_mask_offset_y = self.motorcycle.motorcycle_pos[1] + 74
+            rect_motorcycle = self.motorcycle.motorcycle_mask.get_rect().move(self.motorcycle.motorcycle_pos[0], motorcycle_mask_offset_y)
+            pygame.draw.rect(self.display, (0, 255, 0, 50), rect_motorcycle)
+
+            obstacle_mask_offset_y = self.background.road_y + self.obstacles.obstacle_offset + (obstacle_rect.height // 2) + 6
+            rect_obstacle = self.obstacles.obstacle_mask.get_rect().move((self.SCALE[0] - self.obstacles.obstacle_x, obstacle_mask_offset_y))
+            pygame.draw.rect(self.display, (255, 0, 0, 50), rect_obstacle)
+            # print(f"obstacle x {obstacle_rect.x}, y {obstacle_rect.y}")
             if self.motorcycle.motorcycle_mask.overlap(self.obstacles.obstacle_mask,
                                                        (obstacle_rect.x - self.motorcycle.motorcycle_pos[0],
-                                                        obstacle_rect.y - self.motorcycle.motorcycle_pos[1] - 65)):
+                                                        obstacle_mask_offset_y - motorcycle_mask_offset_y)):
                 self.motorcycle.speed = 0
                 self.collision = True
             else:

@@ -55,7 +55,7 @@ class Motorcycle:
         self.motorcycle_pos = rotated_image_rect
         self.motorcycle_mask = pygame.mask.from_surface(rotated_image)
         if self.angle == 0:
-            self.motorcycle_mask = pygame.mask.Mask((self.motorcycle_image.get_width(), self.motorcycle_image.get_height() - 80), fill=True)
+            self.motorcycle_mask = pygame.mask.Mask((self.motorcycle_image.get_width(), 25), fill=True)
         return rotated_image, rotated_image_rect
 
     def wheelie_state(self):
@@ -161,7 +161,6 @@ class Motorcycle:
             neutral = self.font.render("N", True, (255, 255, 255))
             surface.blit(neutral, (self.speedometer_pos[0] + 81, self.speedometer_pos[1] + 158))
 
-        # TODO bad init? refactor this
         counter_offset = 0
         if self.speed in range(10, 19):
             counter_offset = 6
@@ -181,11 +180,11 @@ class Motorcycle:
         if self.game.last_key_v["up"] and self.position[1] >= self.game.background.road_y + 52:
             if self.game.last_key_v["down"] and self.game.last_key == "down" and self.position[1] < self.game.SCALE[1] - 36:
                 if self.position[1] != self.game.SCALE[1] - 36:
-                    self.position[1] += 5
+                    self.position[1] += 2
             elif self.position[1] != self.game.background.road_y + 52 and (not self.game.last_key_v["down"] or self.game.last_key == "up"):
-                self.position[1] -= 5
+                self.position[1] -= 2
         elif self.game.last_key_v["down"] and self.position[1] < self.game.SCALE[1] - 36:
-            self.position[1] += 5
+            self.position[1] += 3
 
     def update(self):
         self.move()
