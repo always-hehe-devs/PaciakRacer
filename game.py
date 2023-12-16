@@ -59,10 +59,9 @@ class Game:
 
             self.background.render_lanterns(self.display, self.motorcycle.speed)
 
-            # TODO updated collision area to height from ground to bike axle
             if self.motorcycle.motorcycle_mask.overlap(self.obstacles.obstacle_mask,
                                                        (obstacle_rect.x - self.motorcycle.motorcycle_pos[0],
-                                                        obstacle_rect.y- self.motorcycle.motorcycle_pos[1])):
+                                                        obstacle_rect.y - self.motorcycle.motorcycle_pos[1] - 65)):
                 self.motorcycle.speed = 0
                 self.collision = True
             else:
