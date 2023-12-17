@@ -197,4 +197,3 @@ class Motorcycle:
         image, rect = self.player()
         surface.blit(image, rect)
         self.draw_speedometer(surface)
-

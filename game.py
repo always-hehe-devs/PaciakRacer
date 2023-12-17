@@ -19,7 +19,7 @@ class Game:
         self.clock = pygame.time.Clock()
 
         self.assets = {
-            "background": load_image("background/background_0.png"),
+            "background": load_image("background/mirror-lake.png"),
             "ground": load_image("tiles/ground/0.png"),
             "road": load_image("tiles/ground/road.png"),
             "car": load_image("cars/car.png", color_key=(0, 0, 0)),
