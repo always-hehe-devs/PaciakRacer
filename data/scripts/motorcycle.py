@@ -55,7 +55,7 @@ class Motorcycle:
         self.motorcycle_pos = rotated_image_rect
         self.motorcycle_mask = pygame.mask.from_surface(rotated_image)
         if self.angle == 0:
-            self.motorcycle_mask = pygame.mask.Mask((self.motorcycle_image.get_width(), 25), fill=True)
+            self.motorcycle_mask = pygame.mask.Mask((self.motorcycle_image.get_width(), 10), fill=True)
         return rotated_image, rotated_image_rect
 
     def wheelie_state(self):
