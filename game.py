@@ -4,6 +4,7 @@ from data.scripts.util import load_image, load_images
 from data.scripts.motorcycle import Motorcycle
 from data.scripts.background import Background
 from data.scripts.obstacles import Obstacles
+from data.scripts.score import Score
 
 
 class Game:
@@ -41,6 +42,7 @@ class Game:
 
         self.background = Background(self)
 
+        self.score = Score(self)
         self.motorcycle = Motorcycle(self, self.assets['biker'], (22, 77))
         self.motorcycle_mask_offset_y = self.motorcycle.motorcycle_pos[1] + 74
         self.obstacles = Obstacles(self, self.background.road_y)
@@ -57,6 +59,7 @@ class Game:
             self.background.render_road(self.display)
             self.background.render(self.display, self.motorcycle.speed)
 
+            self.score.render_score(self.display)
             self.motorcycle.update()
 
             if (self.motorcycle_mask_offset_y) > self.obstacle_mask_offset_y:

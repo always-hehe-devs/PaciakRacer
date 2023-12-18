@@ -180,11 +180,11 @@ class Motorcycle:
         if self.game.last_key_v["up"] and self.position[1] >= self.game.background.road_y + 52:
             if self.game.last_key_v["down"] and self.game.last_key == "down" and self.position[1] < self.game.SCALE[1] - 36:
                 if self.position[1] != self.game.SCALE[1] - 36:
-                    self.position[1] += 2
+                    self.position[1] += 5
             elif self.position[1] != self.game.background.road_y + 52 and (not self.game.last_key_v["down"] or self.game.last_key == "up"):
-                self.position[1] -= 2
+                self.position[1] -= 5
         elif self.game.last_key_v["down"] and self.position[1] < self.game.SCALE[1] - 36:
-            self.position[1] += 3
+            self.position[1] += 5
 
     def update(self):
         self.move()
