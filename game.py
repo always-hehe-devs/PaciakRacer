@@ -87,6 +87,7 @@ class Game:
                                                         self.obstacle_mask_offset_y - self.motorcycle_mask_offset_y)):
                 self.motorcycle.speed = 0
                 self.collision = True
+                self.score.add_points(20)
             else:
                 self.collision = False
 
