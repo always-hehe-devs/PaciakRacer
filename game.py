@@ -87,9 +87,12 @@ class Game:
                                                         self.obstacle_mask_offset_y - self.motorcycle_mask_offset_y)):
                 self.motorcycle.speed = 0
                 self.collision = True
-                self.score.add_points(20)
             else:
                 self.collision = False
+
+            print(f"Moto pos: {self.motorcycle.motorcycle_pos[0]} Obstacle pos: {obstacle_rect.x}")
+            if obstacle_rect.x in range(30, 100)  and not self.collision:
+                self.score.add_points(0.01*self.motorcycle.speed)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
