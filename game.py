@@ -90,9 +90,8 @@ class Game:
             else:
                 self.collision = False
 
-            print(f"Moto pos: {self.motorcycle.motorcycle_pos[0]} Obstacle pos: {obstacle_rect.x}")
             if obstacle_rect.x in range(30, 100)  and not self.collision:
-                self.score.add_points(0.01*self.motorcycle.speed)
+                self.score.add_points(0.02*self.motorcycle.speed // 1)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
@@ -103,12 +102,8 @@ class Game:
                         self.motorcycle.change_gear("up")
                     if event.key == pygame.K_s:
                         self.motorcycle.change_gear("down")
-                    if event.key == pygame.K_f:
-                        self.wheelie = True
                     if event.key == pygame.K_a:
                         self.throttle_open = True
-                    if event.key == pygame.K_SPACE:
-                        self.jumping = True
                     if event.key == pygame.K_UP:
                         self.last_key = "up"
                         self.last_key_v["up"] = True
@@ -120,8 +115,6 @@ class Game:
                         self.last_key_v["up"] = False
                     if event.key == pygame.K_DOWN:
                         self.last_key_v["down"] = False
-                    if event.key == pygame.K_f:
-                        self.wheelie = False
                     if event.key == pygame.K_a:
                         self.throttle_open = False
 
