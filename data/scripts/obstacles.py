@@ -19,7 +19,7 @@ class Obstacles:
         self.obstacle_image = random.choice(self.obstacle_images)
         while self.prev == self.obstacle_image:
             self.obstacle_image = random.choice(self.obstacle_images)
-        self.obstacle_offset = random.randint(15, 72)
+        self.obstacle_offset = random.randint(20, 72)
         return self.obstacle_image
 
     def render_obstacles(self, surface, speed):
@@ -33,5 +33,4 @@ class Obstacles:
             self.obstacle_x -= self.game.SCALE[0] + obstacle.get_width()
             self.prev = self.obstacle_image
             obstacle = self.get_random_obstacle()
-        print(self.obstacle_offset)
         return surface.blit(obstacle, (self.game.SCALE[0] - self.obstacle_x, self.road_pos + self.obstacle_offset))
