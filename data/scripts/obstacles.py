@@ -23,7 +23,7 @@ class Obstacles:
         return self.obstacle_image
 
     def render_obstacles(self, surface, speed):
-        self.obstacle_x += speed / 30
+        self.obstacle_x += speed // 16
         obstacle = self.obstacle_image
         self.obstacle_size = (obstacle.get_width() * 2, obstacle.get_height() * 2)
         obstacle = pygame.transform.smoothscale(obstacle, size=self.obstacle_size)
