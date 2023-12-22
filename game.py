@@ -5,6 +5,7 @@ from data.scripts.motorcycle import Motorcycle
 from data.scripts.background import Background
 from data.scripts.obstacles import Obstacles
 from data.scripts.score import Score
+from data.scripts.info_board import InfoBoard
 
 
 class Game:
@@ -20,6 +21,7 @@ class Game:
         self.clock = pygame.time.Clock()
 
         self.assets = {
+            "control_board": load_image("boards/control_board.png", alpha_convert=True),
             "background": load_image("background/mirror-lake.png"),
             "ground": load_image("tiles/ground/0.png"),
             "road": load_image("tiles/ground/road.png"),
@@ -42,6 +44,7 @@ class Game:
 
         self.background = Background(self)
 
+        self.board = InfoBoard(self)
         self.score = Score(self)
         self.motorcycle = Motorcycle(self, self.assets['biker'], (22, 77))
         self.motorcycle_mask_offset_y = self.motorcycle.motorcycle_pos[1] + 74
@@ -52,12 +55,15 @@ class Game:
         self.last_key = None
         self.last_key_v = {"up": False, "down": False}
 
+        self.show_board = True
+
 
     def run(self):
         while True:
             self.background.render_static_background(self.display)
             self.background.render_road(self.display)
             self.background.render(self.display, self.motorcycle.speed)
+
 
             self.score.render_score(self.display)
             self.motorcycle.update()
@@ -93,31 +99,39 @@ class Game:
             if obstacle_rect.x in range(30, 100)  and not self.collision:
                 self.score.add_points(0.02*self.motorcycle.speed // 1)
 
+            if self.show_board:
+                self.board.render_controls_board(self.display)
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     sys.exit()
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_w:
-                        self.motorcycle.change_gear("up")
-                    if event.key == pygame.K_s:
-                        self.motorcycle.change_gear("down")
-                    if event.key == pygame.K_a:
-                        self.throttle_open = True
-                    if event.key == pygame.K_UP:
-                        self.last_key = "up"
-                        self.last_key_v["up"] = True
-                    if event.key == pygame.K_DOWN:
-                        self.last_key = "down"
-                        self.last_key_v["down"] = True
-                if event.type == pygame.KEYUP:
-                    if event.key == pygame.K_UP:
-                        self.last_key_v["up"] = False
-                    if event.key == pygame.K_DOWN:
-                        self.last_key_v["down"] = False
-                    if event.key == pygame.K_a:
-                        self.throttle_open = False
 
+                if not self.show_board:
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_w:
+                            self.motorcycle.change_gear("up")
+                        if event.key == pygame.K_s:
+                            self.motorcycle.change_gear("down")
+                        if event.key == pygame.K_a:
+                            self.throttle_open = True
+                        if event.key == pygame.K_UP:
+                            self.last_key = "up"
+                            self.last_key_v["up"] = True
+                        if event.key == pygame.K_DOWN:
+                            self.last_key = "down"
+                            self.last_key_v["down"] = True
+                    if event.type == pygame.KEYUP:
+                        if event.key == pygame.K_UP:
+                            self.last_key_v["up"] = False
+                        if event.key == pygame.K_DOWN:
+                            self.last_key_v["down"] = False
+                        if event.key == pygame.K_a:
+                            self.throttle_open = False
+                else:
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_SPACE:
+                            self.show_board = False
 
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
             pygame.display.update()
