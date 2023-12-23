@@ -26,5 +26,5 @@ class InfoBoard:
             surface.blit(controls_desc, (text_pos[0], text_pos[1]))
         game_name = self.title_font.render("Paciak", True, (112, 20, 96))
         surface.blit(game_name, (asset_center[0] + 140, asset_center[1] + 30))
-        game_sub_name = self.basic_font.render("RACING", True, (64, 17, 56))
+        game_sub_name = self.basic_font.render("RACER", True, (64, 17, 56))
         surface.blit(game_sub_name, (asset_center[0] + 300, asset_center[1] + 75))
