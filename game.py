@@ -7,6 +7,8 @@ from data.scripts.obstacles import Obstacles
 from data.scripts.score import Score
 from data.scripts.info_board import InfoBoard
 
+from datetime import datetime, timedelta
+
 
 class Game:
     RESOLUTION = (1920, 1080)
@@ -56,6 +58,9 @@ class Game:
         self.last_key_v = {"up": False, "down": False}
 
         self.show_board = True
+        self.time_over = False
+        self.current_time = None
+        self.timer = 60 * 1000
 
 
     def run(self):
@@ -66,8 +71,10 @@ class Game:
 
             if self.show_board:
                 self.board.render_controls_board(self.display)
+            elif self.time_over:
+                self.board.render_controls_board(self.display)
             else:
-
+                self.score.render_timer(self.display, self.current_time)
                 self.score.render_score(self.display)
                 self.motorcycle.update()
 
@@ -133,10 +140,18 @@ class Game:
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_SPACE:
                             self.show_board = False
+                            self.current_time = self.timer
+
+
+            if self.current_time and self.current_time >= 0:
+                self.current_time -= self.clock.get_rawtime()
+            elif self.current_time and self.current_time <= 0:
+                self.time_over = True
 
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
             pygame.display.update()
             self.clock.tick(60)
+
 
 
 if __name__ == "__main__":
