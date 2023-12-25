@@ -72,7 +72,7 @@ class Game:
             if self.show_board:
                 self.board.render_controls_board(self.display)
             elif self.time_over:
-                self.board.render_controls_board(self.display)
+                self.board.render_end_game(self.display)
             else:
                 self.score.render_timer(self.display, self.current_time)
                 self.score.render_score(self.display)

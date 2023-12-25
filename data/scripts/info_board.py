@@ -28,3 +28,7 @@ class InfoBoard:
         surface.blit(game_name, (asset_center[0] + 140, asset_center[1] + 30))
         game_sub_name = self.basic_font.render("RACER", True, (64, 17, 56))
         surface.blit(game_sub_name, (asset_center[0] + 300, asset_center[1] + 75))
+
+    def render_end_game(self, surface):
+        game_sub_name = self.title_font.render("Time's up!", True, (255, 255, 255))
+        surface.blit(game_sub_name, (self.game.SCALE[0] // 2, self.game.SCALE[1] // 2))
