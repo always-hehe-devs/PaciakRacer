@@ -72,7 +72,7 @@ class Game:
             if self.show_board:
                 self.board.render_controls_board(self.display)
             elif self.time_over:
-                self.board.render_end_game(self.display)
+                self.board.render_end_game(self.display, self.score.total_score)
             else:
                 self.score.render_timer(self.display, self.current_time)
                 self.score.render_score(self.display)
@@ -88,16 +88,20 @@ class Game:
                 self.background.render_lanterns(self.display, self.motorcycle.speed)
 
                 self.motorcycle_mask_offset_y = self.motorcycle.motorcycle_pos[1] + 88
-                # rect_motorcycle = self.motorcycle.motorcycle_mask.get_rect().move(self.motorcycle.motorcycle_pos[0],
-                #                                                                   self.motorcycle_mask_offset_y)
-                # pygame.draw.rect(self.display, (0, 255, 0, 50), rect_motorcycle)
+
+                # draw colision rect debug
+                rect_motorcycle = self.motorcycle.motorcycle_mask.get_rect().move(self.motorcycle.motorcycle_pos[0],
+                                                                                  self.motorcycle_mask_offset_y)
+                pygame.draw.rect(self.display, (0, 255, 0, 50), rect_motorcycle)
 
                 self.obstacle_mask_offset_y = (self.background.road_y + self.obstacles.obstacle_offset +
                                                (self.obstacles.obstacle_size[1] - self.obstacles.obstacle_mask.get_size()[1]))
 
-                # rect_obstacle = self.obstacles.obstacle_mask.get_rect().move(
-                #     (self.SCALE[0] - self.obstacles.obstacle_x, self.obstacle_mask_offset_y))
-                # pygame.draw.rect(self.display, (255, 0, 0, 50), rect_obstacle)
+                # draw colision rect debug
+                rect_obstacle = self.obstacles.obstacle_mask.get_rect().move(
+                    (self.SCALE[0] - self.obstacles.obstacle_x, self.obstacle_mask_offset_y))
+                pygame.draw.rect(self.display, (255, 0, 0, 50), rect_obstacle)
+
                 if self.motorcycle.motorcycle_mask.overlap(self.obstacles.obstacle_mask,
                                                            (obstacle_rect.x - self.motorcycle.motorcycle_pos[0],
                                                             self.obstacle_mask_offset_y - self.motorcycle_mask_offset_y)):

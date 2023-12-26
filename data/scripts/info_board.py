@@ -1,4 +1,5 @@
 import pygame
+from data.scripts.util import draw_rotated_text
 
 
 class InfoBoard:
@@ -6,6 +7,8 @@ class InfoBoard:
         self.game = game
         self.basic_font = pygame.font.Font("data/fonts/Pixeled.ttf", 15)
         self.title_font = pygame.font.Font("data/fonts/PixelCards.ttf", 80)
+        self.times_up_font = pygame.font.Font("data/fonts/anton.regular.ttf", 60)
+        self.score_font = pygame.font.Font("data/fonts/anton.regular.ttf", 50)
 
     def render_controls_board(self, surface):
         text = [("GEAR UP", 33),
@@ -29,6 +32,6 @@ class InfoBoard:
         game_sub_name = self.basic_font.render("RACER", True, (64, 17, 56))
         surface.blit(game_sub_name, (asset_center[0] + 300, asset_center[1] + 75))
 
-    def render_end_game(self, surface):
-        game_sub_name = self.title_font.render("Time's up!", True, (255, 255, 255))
-        surface.blit(game_sub_name, (self.game.SCALE[0] // 2, self.game.SCALE[1] // 2))
+    def render_end_game(self, surface, score):
+        draw_rotated_text(surface, self.times_up_font, "TIME'S UP!", ((self.game.SCALE[0] // 2) - 100, (self.game.SCALE[1] // 2) - 200), 0, draw_shadow=True)
+        draw_rotated_text(surface, self.score_font, f"Your score: {int(score)}", ((self.game.SCALE[0] // 2) - 120, (self.game.SCALE[1] // 2) - 100), 0, draw_shadow=True)
