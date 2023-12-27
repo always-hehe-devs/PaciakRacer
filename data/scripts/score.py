@@ -13,6 +13,11 @@ class Score:
     def add_points(self, points):
         self.total_score += points
 
+    def substrate_points(self, points):
+        self.total_score -= points
+        if self.total_score <= 0:
+            self.total_score = 0
+
     def render_score(self, surface):
         self.draw_total_score(surface)
 

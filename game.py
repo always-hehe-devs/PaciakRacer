@@ -105,8 +105,11 @@ class Game:
                 if self.motorcycle.motorcycle_mask.overlap(self.obstacles.obstacle_mask,
                                                            (obstacle_rect.x - self.motorcycle.motorcycle_pos[0],
                                                             self.obstacle_mask_offset_y - self.motorcycle_mask_offset_y)):
+                    if not self.motorcycle.speed == 0 and not self.collision:
+                        self.score.substrate_points(100)
                     self.motorcycle.speed = 0
                     self.collision = True
+
                 else:
                     self.collision = False
 
