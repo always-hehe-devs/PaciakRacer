@@ -89,23 +89,13 @@ class Game:
 
                 self.motorcycle_mask_offset_y = self.motorcycle.motorcycle_pos[1] + 88
 
-                # draw colision rect debug
-                rect_motorcycle = self.motorcycle.motorcycle_mask.get_rect().move(self.motorcycle.motorcycle_pos[0],
-                                                                                  self.motorcycle_mask_offset_y)
-                pygame.draw.rect(self.display, (0, 255, 0, 50), rect_motorcycle)
-
                 self.obstacle_mask_offset_y = (self.background.road_y + self.obstacles.obstacle_offset +
                                                (self.obstacles.obstacle_size[1] - self.obstacles.obstacle_mask.get_size()[1]))
-
-                # draw colision rect debug
-                rect_obstacle = self.obstacles.obstacle_mask.get_rect().move(
-                    (self.SCALE[0] - self.obstacles.obstacle_x, self.obstacle_mask_offset_y))
-                pygame.draw.rect(self.display, (255, 0, 0, 50), rect_obstacle)
 
                 if self.motorcycle.motorcycle_mask.overlap(self.obstacles.obstacle_mask,
                                                            (obstacle_rect.x - self.motorcycle.motorcycle_pos[0],
                                                             self.obstacle_mask_offset_y - self.motorcycle_mask_offset_y)):
-                    if not self.motorcycle.speed == 0 and not self.collision:
+                    if self.motorcycle.speed != 0 and not self.collision:
                         self.score.substrate_points(100)
                     self.motorcycle.speed = 0
                     self.collision = True
@@ -122,7 +112,7 @@ class Game:
                     pygame.quit()
                     sys.exit()
 
-                if not self.show_board:
+                if not self.show_board and not self.time_over:
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_w:
                             self.motorcycle.change_gear("up")
@@ -143,12 +133,13 @@ class Game:
                             self.last_key_v["down"] = False
                         if event.key == pygame.K_a:
                             self.throttle_open = False
-                else:
+                elif self.show_board or self.time_over:
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_SPACE:
                             self.show_board = False
                             self.current_time = self.timer
-
+                            self.time_over = False
+                            self.score.total_score = 0
 
             if self.current_time and self.current_time >= 0:
                 self.current_time -= self.clock.get_rawtime()

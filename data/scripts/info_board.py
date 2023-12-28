@@ -35,3 +35,4 @@ class InfoBoard:
     def render_end_game(self, surface, score):
         draw_rotated_text(surface, self.times_up_font, "TIME'S UP!", ((self.game.SCALE[0] // 2) - 100, (self.game.SCALE[1] // 2) - 200), 0, draw_shadow=True)
         draw_rotated_text(surface, self.score_font, f"Your score: {int(score)}", ((self.game.SCALE[0] // 2) - 120, (self.game.SCALE[1] // 2) - 100), 0, draw_shadow=True)
+        draw_rotated_text(surface, self.basic_font, "PRESS SPACEBAR TO RESTART GAME", ((self.game.SCALE[0] // 2) - 200, (self.game.SCALE[1] // 2) + 10), 0, color=(0, 0, 0))
