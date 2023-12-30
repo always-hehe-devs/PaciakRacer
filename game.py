@@ -27,7 +27,6 @@ class Game:
             "background": load_image("background/mirror-lake.png"),
             "ground": load_image("tiles/ground/0.png"),
             "road": load_image("tiles/ground/road.png"),
-            "car": load_image("cars/car.png", color_key=(0, 0, 0)),
             "biker": load_image("motorcycles/biker.png", alpha_convert=True),
             "speedometer": load_image("speedometer/speedometer.png", alpha_convert=True),
             "needle": load_image("speedometer/needle.png", alpha_convert=True),
@@ -35,9 +34,6 @@ class Game:
             "obstacles": load_images("background/obstacles", alpha_convert=True),
             "lantern": load_image("background/lantern.png", alpha_convert=True)
         }
-
-        self.car_x_pos = 1000
-        self.car_rect = self.assets['car'].get_rect(bottomleft=(self.car_x_pos, 960))
 
         self.collision = False
         self.wheelie = False
@@ -60,7 +56,18 @@ class Game:
         self.show_board = True
         self.time_over = False
         self.current_time = None
-        self.timer = 60 * 1000
+        self.timer = 5 * 1000
+
+    def restart_game(self):
+        self.show_board = False
+        self.current_time = self.timer
+        self.time_over = False
+        self.score.total_score = 0
+        self.motorcycle.speed = 0
+        self.motorcycle.current_gear = "N"
+        self.motorcycle.position = [150, 442]
+        self.obstacles.obstacle_x = 0
+        self.last_key = None
 
 
     def run(self):
@@ -136,10 +143,8 @@ class Game:
                 elif self.show_board or self.time_over:
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_SPACE:
-                            self.show_board = False
-                            self.current_time = self.timer
-                            self.time_over = False
-                            self.score.total_score = 0
+                            self.restart_game()
+
 
             if self.current_time and self.current_time >= 0:
                 self.current_time -= self.clock.get_rawtime()

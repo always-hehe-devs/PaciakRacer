@@ -10,6 +10,7 @@ class Background:
         self.move_x = 0
         self.scale_offset = 0
         self.road_y = self.game.SCALE[1] - self.game.assets["road"].get_height()
+        self.move_x_road = 0
 
     def draw_layers(self, surface, obj_img, bg_x, bg_y):
         bg_x = bg_x % self.game.SCALE[0]
@@ -35,8 +36,8 @@ class Background:
 
     def render_road(self, surface):
         layer = self.create_road_layer()
-        move_x_road = self.move_x // 3
-        return Background.draw_layers(self, surface, layer, move_x_road, self.road_y)
+        self.move_x_road = self.move_x // 3
+        return Background.draw_layers(self, surface, layer, self.move_x_road, self.road_y)
 
     def create_trees_layers(self):
         self.scale_offset = 0
