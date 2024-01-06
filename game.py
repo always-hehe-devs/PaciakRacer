@@ -56,7 +56,7 @@ class Game:
         self.show_board = True
         self.time_over = False
         self.current_time = None
-        self.timer = 5 * 1000
+        self.timer = 60 * 1000
 
     def restart_game(self):
         self.show_board = False
